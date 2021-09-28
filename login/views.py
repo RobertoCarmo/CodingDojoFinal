@@ -15,54 +15,6 @@ def registrar(request):
 def inicio(request):
     usuario = User.objects.filter(email=request.POST['email2'])
     errores = User.objects.validar_login(request.POST, usuario)
-
-def inicio2(request):
-    email2=request.POST['email2']
-    gato=request.POST['gato']
-    password=request.POST['password']
-    
-    #creacion en base de datos del poke
-    poke = Poke.objects.create(
-        email = email2,
-        gato = gato,
-        password = password,
-        
-    )
-    
-    #lista_pokes = Poke.objects.all()
-
-    #busco  desde la base de datos todos los pokes
-    #return HttpResponse(email2+" "+gato+" "+password)
-
-    #pasando data a Front   
-    context={
-        'gato':request.POST,
-        'elefante':gato,
-        'avion':password,
-        'lista_pokes': Poke.objects.all()
-    }
-
-    return render(request, 'prueba.html',context)
-
-
-def inicio3(request):
-    nombre = request.POST['nom']
-    edad = request.POST['edad']
-    mail = request.POST['mail']
-    
-    poke2 = Poke2.objects.create(
-        nombre = nombre,
-        edad = edad,
-        mail = mail, 
-    )
-    
-    context={
-        'leon':nombre,
-        'tigre':edad,
-        'puma': mail,
-    }
-    
-    return render(request, 'mostrar.html',context)
     
     if len(errores) > 0:
         for key, msg in errores.items():
@@ -89,17 +41,14 @@ def registro(request):
         if request.POST['rol'] == '1':
             user = User.objects.create(
                 nombre=request.POST['nombre'],
-                alias=request.POST['alias'],
-                email=request.POST['email'],
-                cumple=request.POST['cumple'],
+                username=request.POST['username'],
                 password=decode_hash_pw,
                 rol=1,
             )
         else:
             user = User.objects.create(
                 nombre=request.POST['nombre'],
-                alias=request.POST['alias'],
-                email=request.POST['email'],
+                username=request.POST['username'],
                 password=decode_hash_pw,
                 rol=2,
             )

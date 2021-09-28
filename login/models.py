@@ -6,19 +6,15 @@ import bcrypt
 class UserManager(models.Manager):
     def basic_validator(self, postData):
         errores = {}
-        if len(User.objects.filter(email=postData['email'])) > 0:
-            errores['existe'] = "Email ya registrado"
+        if len(User.objects.filter(username=postData['username'])) > 0:
+            errores['existe'] = "Ya existe el nombre de usuario"
         else:
             if len(postData['nombre']) == 0:
                 errores['nombre'] = "Nombre es obligatorio"
-            if len(postData['alias']) == 0:
-                errores['alias'] = "Alias es obligatorio"
-            EMAIL = re.compile(
-                r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
-            if not EMAIL.match(postData['email']):
-                errores['email'] = "email invalido"
-            if len(postData['password']) < 6:
-                errores['password'] = "Password debe ser mayor a 6 caracteres"
+            if len(postData['username']) == 0:
+                errores['username'] = "Nombre de Usuario es obligatorio"
+            if len(postData['password']) < 8:
+                errores['password'] = "Password debe ser mayor a 8 caracteres"
             if postData['password'] != postData['password2']:
                 errores['password'] = "Password no son iguales"
         return errores
@@ -42,37 +38,18 @@ class UserManager(models.Manager):
 class User(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=40)
-    alias = models.CharField(max_length=40)
-    email = models.CharField(max_length=40)
+    username = models.CharField(max_length=40)
     password = models.CharField(max_length=255)
-    cumple = models.DateTimeField()
-    rol = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = UserManager()
     
-class Poke(models.Model):
+class Travels(models.Model):
     id = models.AutoField(primary_key=True)#Creara un campo autoincremental primario.
-    email = models.CharField(max_length=60)
-    gato = models.CharField(max_length=60)
-    password = models.CharField(max_length=20)
+    destino = models.CharField(max_length=60)
+    inicio = models.DateField(max_length=12)
+    termino = models.DateField(max_length=12)
+    plan = models.CharField(max_length=60)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-
-class Poke2(models.Model):
-    id = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=60)
-    edad = models.CharField(max_length=3)
-    mail = models.CharField(max_length=60)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
-class Toque(models.Model):
-    id = models.AutoField(primary_key=True)
-    emisor = models.ForeignKey(User, related_name='emisor',on_delete=models.CASCADE)
-    receptor = models.ManyToManyField(User,related_name='receptor')
-    cantidad = models.IntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
